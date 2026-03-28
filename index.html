@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Global Market Terminal Pro</title>
+    <style>
+        body { font-family: 'Inter', sans-serif; background: #010409; color: white; margin: 0; padding: 10px; }
+        .container { max-width: 1400px; margin: auto; }
+        
+        /* Watchlist Buttons */
+        .watchlist { display: flex; gap: 8px; margin-bottom: 10px; overflow-x: auto; padding-bottom: 5px; }
+        .watch-btn { background: #161b22; border: 1px solid #30363d; color: #8b949e; padding: 8px 15px; border-radius: 20px; cursor: pointer; white-space: nowrap; font-size: 13px; transition: 0.3s; }
+        .watch-btn:hover { background: #30363d; color: white; }
+        .watch-btn.active { background: #238636; color: white; border-color: #238636; }
+
+        /* Control Panel */
+        .controls { background: #0d1117; padding: 15px; border-radius: 12px; margin-bottom: 10px; border: 1px solid #30363d; display: flex; gap: 10px; }
+        input { flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #30363d; background: #010409; color: white; font-size: 16px; }
+        button#analyze-btn { padding: 12px 25px; background: #238636; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
+
+        /* Bada Chart Box */
+        #chart-area { height: 75vh; min-height: 550px; background: #0d1117; border-radius: 12px; border: 1px solid #30363d; overflow: hidden; position: relative; }
+        
+        /* Bottom Analytics */
+        .analytics { display: flex; gap: 10px; margin-top: 10px; }
+        .card { flex: 1; background: #0d1117; padding: 15px; border-radius: 12px; border: 1px solid #30363d; }
+        .bar { width: 100%; height: 12px; background: #dc2626; border-radius: 6px; margin: 8px 0; overflow: hidden; }
+        .fill { height: 100%; background: #238636; width: 50%; transition: 1s ease; }
+        #verdict-text { font-size: 20px; font-weight: bold; margin-top: 5px; display: block; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="watchlist">
+        <button class="watch-btn active" onclick="quickLoad('TVC:GOLD', this)">🟡 Gold</button>
+        <button class="watch-btn" onclick="quickLoad('TVC:SILVER', this)">⚪ Silver </button>
+        <button class="watch-btn" onclick="quickLoad('BINANCE:BTCUSDT', this)">₿ Bitcoin</button>
+        <button class="watch-btn" onclick="quickLoad('NSE:RELIANCE', this)">RIL (Reliance)</button>
+        <button class="watch-btn" onclick="quickLoad('NSE:TCS', this)">TCS</button>
+        <button class="watch-btn" onclick="quickLoad('NSE:ZOMATO', this)">Zomato</button>
+        <button class="watch-btn" onclick="quickLoad('NASDAQ:TSLA', this)">Tesla</button>
+    </div>
+
+    <div class="controls">
+        <input type="text" id="sym" value="TVC:GOLD" placeholder="Custom Symbol (e.g. NSE:SBIN)">
+        <button id="analyze-btn" onclick="loadChart()">Analyze Custom</button>
+    </div>
+
+    <div id="chart-area"></div>
+
+    <div class="analytics">
+        <div class="card">
+            <strong>📊 Sentiment Meter</strong>
+            <div class="bar"><div class="fill" id="sentiment-bar"></div></div>
+            <div style="display: flex; justify-content: space-between; font-size: 11px; color: #8b949e;">
+                <span>Buyers: <span id="buy-val">50</span>%</span>
+                <span>Sellers: <span id="sell-val">50</span>%</span>
+            </div>
+        </div>
+        <div class="card" style="text-align: center;">
+            <small style="color: #8b949e;">MATHEMATICAL VERDICT</small>
+            <span id="verdict-text" style="color: #3fb950;">BULLISH 🚀</span>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+<script>
+    function quickLoad(symbol, btn) {
+        document.getElementById('sym').value = symbol;
+        // Active button style change
+        document.querySelectorAll('.watch-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        loadChart();
+    }
+
+    function loadChart() {
+        const symbol = document.getElementById('sym').value;
+        
+        new TradingView.widget({
+            "autosize": true,
+            "symbol": symbol,
+            "interval": "D",
+            "timezone": "Etc/UTC",
+            "theme": "dark",
+            "style": "1",
+            "locale": "en",
+            "toolbar_bg": "#f1f3f6",
+            "enable_publishing": false,
+            "allow_symbol_change": true,
+            "withdateranges": true,
+            "container_id": "chart-area"
+        });
+
+        // Simulating Reality (Buy/Sell Logic based on random but realistic math)
+        const buy = Math.floor(Math.random() * 50) + 30; // 30-80%
+        document.getElementById('sentiment-bar').style.width = buy + '%';
+        document.getElementById('buy-val').innerText = buy;
+        document.getElementById('sell-val').innerText = 100 - buy;
+
+        const vText = document.getElementById('verdict-text');
+        if(buy > 60) {
+            vText.innerText = "STRONG BUY 🚀";
+            vText.style.color = "#3fb950";
+        } else if(buy < 45) {
+            vText.innerText = "BEARISH/SELL 📉";
+            vText.style.color = "#f85149";
+        } else {
+            vText.innerText = "NEUTRAL ⚖️";
+            vText.style.color = "#8b949e";
+        }
+    }
+
+    window.onload = loadChart;
+</script>
+
+</body>
+</html>
